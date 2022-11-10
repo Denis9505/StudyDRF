@@ -1,6 +1,18 @@
-from django.db import models
+from django.db import models, transaction
 
-from studydrf import settings
+from users.models import CustomUser
+
+
+class UserProfile(models.Model):
+    class Meta:
+        db_table = 'profiles'
+
+    id = models.IntegerField(primary_key=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,related_name="profile")
+    balanse = models.DecimalField(max_digits=12, default=0, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.user}'
 
 
 class Category(models.Model):
@@ -8,8 +20,8 @@ class Category(models.Model):
         db_table = 'categories'
 
     KIND = (
-        ('I', 'Income'),
-        ('O', "Outcome"),
+        ('INCOME', 'Income'),
+        ('OUTCOME', "Outcome"),
     )
 
     title = models.CharField('Название', max_length=30)
@@ -21,9 +33,9 @@ class Category(models.Model):
 
 class Transaction(models.Model):
     class Meta:
-        db_table = 'trnsactions'
+        db_table = 'transactions'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     count = models.FloatField('Сумма')
     time = models.DateTimeField(auto_now_add=True)
