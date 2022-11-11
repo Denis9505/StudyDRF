@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Transaction, UserProfile
+from .models import Transaction, UserProfile, Category
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -15,4 +15,10 @@ class TransactionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Transaction
+        fields = '__all__'
+
+
+class CategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = '__all__'
